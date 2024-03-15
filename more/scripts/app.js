@@ -1,5 +1,9 @@
 const app = {
 	doc:document.body,
+	qrUrl:'https://sikuentertaiment.github.io/jagoantri/scan',
+	getUrl(){
+		return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${this.qrUrl}`
+	},
 	init(){
 		console.log('app, i am awake!');
 		this.addRoot();

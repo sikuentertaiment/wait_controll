@@ -74,15 +74,18 @@ nav{
 
 #getAntrian{
 	padding:20px;
-	background:black;
-	color:white;
+	background:whitesmoke;
+	color:black;
 	border-radius:10px;
 	cursor:pointer;
 	text-align:center;
+	border:1px solid gainsboro;
+	font-weight: bold;
 }
 
 #getAntrian:hover{
-	background:green;
+	background:white;
+	color:black;
 }
 
 .page{
