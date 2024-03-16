@@ -33,6 +33,16 @@ header{
 	text-align: center;
 }
 
+select,textarea,option{
+	padding:20px;
+	background:whitesmoke;
+	border-radius:10px;
+	border:1px solid gainsboro;
+	width: 100%;
+	font-family: calibri;
+	outline:none;
+}
+
 /*style nav*/
 
 nav{
@@ -64,6 +74,21 @@ nav{
 	background:white;
 }
 
+.flexcol{
+	display:flex;
+	flex-direction: column;
+	gap:10px;
+}
+
+.flexgap{
+	display: flex;
+	gap:10px;
+}
+
+.flex{
+	display: flex;
+}
+
 
 /*view style*/
 
@@ -81,6 +106,21 @@ nav{
 	text-align:center;
 	border:1px solid gainsboro;
 	font-weight: bold;
+}
+
+.whitebutton{
+	padding:20px;
+	background:whitesmoke;
+	color:black;
+	border-radius:10px;
+	cursor:pointer;
+	text-align:center;
+	border:1px solid gainsboro;
+	font-weight: bold;
+}
+
+.whitebutton:hover{
+	background:white;
 }
 
 #getAntrian:hover{

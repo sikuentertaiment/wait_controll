@@ -25,11 +25,11 @@ const view = {
 			id:'nav',
 			innerHTML:`
 				<div class="item" id=scan style="border-left:none;border-radius:10px 0 0 10px;">
-					<img>
-					<div>Scan QR</div>
+					<img src=./more/media/scanicon.png>
+					<div>Scan Qr</div>
 				</div>
 				<div class=item id=manual style="border-right:none;border-radius:0 10px 10px 0">
-					<img>
+					<img src=./more/media/pushicon.png style=width:24px;height:24px;>
 					<div>Ambil Manual</div>
 				</div>
 			`,
@@ -98,7 +98,7 @@ const view = {
 						margin-top:10px;
 						align-items:center;
 						display:flex;
-						font-size:72px;
+						font-size:84px;
 						justify-content:center;
 					">
 						<img src="./more/media/initloading.gif" style="
@@ -141,8 +141,8 @@ const view = {
 			getPosition(){
 				return new Promise((resolve,reject)=>{
 					setTimeout(()=>{
-						this.numberDisplay.innerHTML = this.num;
 						this.num += 1;
+						this.numberDisplay.innerHTML = this.num;
 						resolve();
 					},1000)
 				})
