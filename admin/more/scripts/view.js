@@ -69,8 +69,9 @@ const view = {
 							<img src=../more/media/nexticon.png style=width:24px;height:24px;>
 							<div>Antrian Selanjutnya</div>
 						</div>
-						<div id=getAntrian style=display:flex;gap:10px;justify-content:center;align-items:center;>
+						<div id=call class=whitebutton style=display:flex;gap:10px;justify-content:center;align-items:center;>
 							<img src=../more/media/speakericon.png style=width:24px;height:24px;>
+							<img src=../more/media/initloading.gif style=width:24px;height:24px;display:none;>
 						</div>
 					</div>
 					<div style=margin-top:10px;height:100%;>
@@ -99,12 +100,32 @@ const view = {
 					</div>
 				</div>
 				<div id=details class=page>
-					<div>Details Pengunjung</div>
+					<div>Informasi Pengunjung</div>
+					<div class=whitebutton style="display:flex;flex-direction:column;align-items:flex-start;">
+						<div>Total Pasien</div>
+						<div class=boldfont>0</div>
+					</div>
+					<div class=whitebutton style="display:flex;flex-direction:column;align-items:flex-start;">
+						<div>Pasien Selesai</div>
+						<div class=boldfont>0</div>
+					</div>
+					<div class=whitebutton style="display:flex;flex-direction:column;align-items:flex-start;">
+						<div>Pasien Menunggu</div>
+						<div class=boldfont>0</div>
+					</div>
+					<div class=whitebutton style="display:flex;flex-direction:column;align-items:flex-start;">
+						<div>Antrian Saat Ini</div>
+						<div class=boldfont>0</div>
+					</div>
+					<div class=whitebutton style="display:flex;flex-direction:column;align-items:flex-start;">
+						<div>Waktu Tunggu Rata2</div>
+						<div class=boldfont>0</div>
+					</div>
 				</div>
 				<div id=settings class=page>
 					<div>Pengaturan Antrian</div>
 					<div>
-						<div class=whitebutton style=display:flex;gap:10px;align-items:center;justify-content:center;>
+						<div id=savebutton class=whitebutton style=display:flex;gap:10px;align-items:center;justify-content:center;>
 							<img src=../more/media/saveicon.png style=width:32px;height:32px;>
 							<div>Simpan Perubahan</div>
 						</div>
@@ -112,7 +133,7 @@ const view = {
 					<div class=flexcol>
 						<div>Praktik Status</div>
 						<div>
-							<select>
+							<select id=workingstatus>
 								<option value=0>Tutup</option>
 								<option value=1>Buka</option>
 							</select>
@@ -121,15 +142,15 @@ const view = {
 					<div class=flexcol>
 						<div>Text Panggilan</div>
 						<div class=flex>
-							<textarea placeholder="Masukan teks panggilan..."></textarea>
+							<textarea placeholder="Masukan teks panggilan..." id=messagevalue spellcheck=false></textarea>
 						</div>
 					</div>
 					<div class=flexcol>
 						<div>Varian Suara Panggilan</div>
 						<div>
-							<select>
-								<option value=0>Varian 1</option>
-								<option value=1>Varian 2</option>
+							<select id=voicevarian>
+								<option value=0>Varian Perempuan</option>
+								<option value=1>Varian Laki-laki</option>
 							</select>
 						</div>
 					</div>
@@ -139,13 +160,24 @@ const view = {
 				this.images = this.findall('img');
 				this.getNumber = this.find('#getAntrian');
 				this.numberDisplay = this.find('#numberdisplay');
+				this.callbutton = this.find('#call');
+				this.savebutton = this.find('#savebutton');
 				this.findall('.page').forEach((page)=>{
 					this[page.id] = page;
 				})
+				this.callbutton.onclick = ()=>{
+					this.call();
+				}
+				this.savebutton.onclick = ()=>{
+					this.saveData();
+				}
 				this.openScene();
 
 				// working with get antrian button
 				this.initGetAntrianButton();
+
+				// force the init button
+				this.initData();
 			},
 			openScene(scene='beranda'){
 				const toclose = ['beranda','details','settings'];
@@ -165,8 +197,8 @@ const view = {
 			getPosition(){
 				return new Promise((resolve,reject)=>{
 					setTimeout(()=>{
-						this.num += 1;
-						this.numberDisplay.innerHTML = this.num;
+						app.settings.variables.antrian += 1;
+						this.numberDisplay.innerHTML = app.settings.variables.antrian;
 						resolve();
 					},1000)
 				})
@@ -178,19 +210,83 @@ const view = {
 					this.setNormal = false;
 					// show the loading, hide the number
 					this.numberDisplay.hide();
-					this.images[2].show();
+					this.images[3].show();
 					await this.getPosition();
 					this.numberDisplay.show();
-					this.images[2].hide();
+					this.images[3].hide();
 
 					this.forceAwait();
 				}
 			},
 			forceAwait(){
 				setTimeout(()=>{
-					this.numberDisplay.innerHTML = '?';
 					this.setNormal = true;
 				},2000);
+			},
+			call(){
+				this.images[1].hide();
+				this.images[2].show();
+				app.callWaiter(()=>{
+					this.images[1].show();
+					this.images[2].hide();
+				});
+			},
+			initData(){
+				// working status
+				this.workingstatusoptions = this.findall('#workingstatus option');
+				this.workingstatusoptions.forEach((option,i)=>{
+					if(i===app.settings.status){
+						option.selected = true;
+					}
+				})
+				// message value
+				this.messagevalue = this.find('#messagevalue');
+				this.messagevalue.value = app.settings.voiceMessage;
+				// voice varian
+				this.voicevarianoptions = this.findall('#voicevarian option');
+				this.voicevarianoptions.forEach((option,i)=>{
+					if(i===app.settings.varianIndex){
+						option.selected = true;
+					}
+				})
+			},
+			saveData(){
+				// working status
+				app.settings.status = Number(this.find('#workingstatus').value);
+				// message value
+				app.settings.voiceMessage = this.find('#messagevalue').value;
+				// voice varian
+				app.settings.varianIndex = Number(this.find('#voicevarian').value);
+
+				// force the notif
+				app.forceNotif('Data berhasil disimpan!');
+			}
+		})
+	},
+	notificationBar(message){
+		return makeElement('div',{
+			style:`
+				padding:10px;
+				display:flex;
+				align-items:center;
+				justify-content:center;
+				gap:10px;
+				border:1px solid gainsboro;
+				border-radius:10px;
+				position:absolute;
+				top:10px;
+				right:10px;
+				background:whitesmoke;
+				z-index:2;
+				cursor:pointer;
+				font-weight:bold;
+			`,
+			innerHTML:`
+				<img src=../more/media/infoicon.png style=width:24px;height:24px;>
+				<div>${message}</div>
+			`,
+			onadded(){
+				setTimeout(()=>{this.remove()},2000)
 			}
 		})
 	}

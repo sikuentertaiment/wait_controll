@@ -11,15 +11,14 @@ body{
 	display: flex;
 	align-items:center;
 	justify-content: center;
-/*	background:whitesmoke;*/
 	font-family: calibri;
+  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
 }
 
 #root #container{
 	width: 480px;
 	height: 95%;
 	background:white;
-/*	border:1px solid gainsboro;*/
 	border-radius:10px;
 	display: flex;
 	flex-direction: column;
@@ -72,6 +71,10 @@ nav{
 
 .item:hover{
 	background:white;
+}
+
+.boldfont{
+	font-size:24px;
 }
 
 .flexcol{
